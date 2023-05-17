@@ -1,3 +1,10 @@
+'''
+    Author: whu-lyh 2942563671@qq.com
+    Date: 2023-05-12 12:36:00
+LastEditors: whu-lyh 2942563671@qq.com
+LastEditTime: 2023-05-17 16:39:51
+    FilePath: /workspace_pr/TransGeo2022/model/TransGeo.py
+'''
 import torch
 import torch.nn as nn
 import numpy as np
@@ -45,7 +52,14 @@ class TransGeo(nn.Module):
         self.polar = None
 
     def forward(self, im_q, im_k, delta=None, atten=None, indexes=None):
+        '''
+            im_q: query panorama image
+            im_k: reference satellite image
+            atten: attention mask for cropping operation
+            indexs: the references queue for hard sample mining
+        '''
         if atten is not None:
+            # crop the reference image based on the attention map
             return self.query_net(im_q), self.reference_net(x=im_k, atten=atten)
         else:
             return self.query_net(im_q), self.reference_net(x=im_k, indexes=indexes)

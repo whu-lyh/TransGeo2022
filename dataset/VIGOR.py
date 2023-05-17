@@ -133,14 +133,18 @@ class VIGOR(torch.utils.data.Dataset):
             with open(train_label_fname, 'r') as file:
                 for line in file.readlines():
                     data = np.array(line.split(' '))
+                    # label is used for what? for statellite image idx
+                    # 0 (1) 2 3 (4) 5 6 (7) 8 9 (10) 11 12 
                     label = []
                     for i in [1, 4, 7, 10]:
                         label.append(self.train_sat_index_dict[data[i]])
                     label = np.array(label).astype(np.int)
+                    # delta is used for what? for pixel offset between reference to panorama image?
+                    # other wrods, the positive and negative reference images
                     delta = np.array([data[2:4], data[5:7], data[8:10], data[11:13]]).astype(float)
                     self.train_list.append(os.path.join(self.root, city, 'panorama', data[0]))
-                    self.train_label.append(label)
-                    self.train_delta.append(delta)
+                    self.train_label.append(label) # reference image idx
+                    self.train_delta.append(delta) # reference image latitude, longitude
                     if not label[0] in self.train_sat_cover_dict:
                         self.train_sat_cover_dict[label[0]] = [idx]
                     else:
@@ -220,6 +224,7 @@ class VIGOR(torch.utils.data.Dataset):
 
             img_query = self.transform_query(img_query)
             img_reference = self.transform_reference(img_reference)
+            # here no crop operation is conducted till now?
             if self.args.crop:
                 atten_sat = Image.open(os.path.join(self.args.resume.replace(self.args.resume.split('/')[-1],''),'attention','train', str(idx)+'.png')).convert('RGB')
                 return img_query, img_reference, torch.tensor(idx), torch.tensor(idx), torch.tensor(self.train_delta[idx, 0]), self.to_tensor(atten_sat)

@@ -140,6 +140,7 @@ class DistributedMiningSamplerVigor(DistributedSampler[T_co]):
         super(DistributedMiningSamplerVigor, self).__init__(dataset, num_replicas, rank, shuffle, seed, drop_last)
         self.dim = dim
         self.batch_size = batch_size * self.num_replicas
+        # queue are the postive and semi-positive reference images
         self.queue_length = max(dataset.train_data_size, len(dataset.train_sat_cover_list))
         self.current_size = len(self.dataset) // self.batch_size * self.batch_size
         self.current_indices = np.arange(self.current_size)

@@ -408,6 +408,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args, train_sampler=
     model.train()
 
     end = time.time()
+    # train_loader returns: query panorama image, reference satellite image, random selected image idx, same idx(shared with panorama idx), pos and neg references image coordinates
     for i, (images_q, images_k, indexes, _, delta, atten) in enumerate(train_loader):
 
         # measure data loading time
